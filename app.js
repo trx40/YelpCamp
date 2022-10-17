@@ -3,6 +3,7 @@ const express = require('express')
 const { default: mongoose } = require('mongoose')
 const app = express()
 const path = require('path')
+const Campground = require('./models/campground')
 
 mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp')
     .then(() => {
@@ -28,4 +29,10 @@ app.listen(3000, () => {
 
 app.get('/', (req, res) => {
     res.render('home.ejs')
+})
+
+app.get('/makecampground', async (req, res) => {
+    const camp = new Campground({ title: 'Ny Backyard', description: 'Cheap camping' })
+    await camp.save()
+    res.send(camp)
 })
