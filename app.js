@@ -65,6 +65,7 @@ app.get('/campgrounds/new', (req, res) => {
 app.get('/campgrounds/:id', catchAsync(async (req, res, next) => {
     const { id } = req.params
     const campground = await Campground.findById(id)
+    if (!campground) throw new ExpressError(400, 'Campground not found')
     res.render('campgrounds/show.ejs', { campground })
 }))
 
@@ -85,6 +86,7 @@ app.put('/campgrounds/:id', catchAsync(async (req, res, next) => {
 app.get('/campgrounds/:id/edit', catchAsync(async (req, res, next) => {
     const { id } = req.params;
     const campground = await Campground.findById(id)
+    if (!campground) throw new ExpressError(400, 'Campground not found')
     res.render('campgrounds/edit.ejs', { campground })
 }))
 
