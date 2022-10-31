@@ -6,6 +6,8 @@ const path = require('path')
 const Campground = require('./models/campground')
 const methodOverride = require('method-override')
 const ejsMate = require('ejs-mate')
+const { nextTick } = require('process')
+const catchAsync = require('./utils/catchAsync')
 
 mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp')
     .then(() => {
@@ -30,59 +32,84 @@ app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 
 
-
 app.get('/', (req, res) => {
     res.render('home.ejs')
 })
 
-app.get('/makecampground', async (req, res) => {
-    const camp = new Campground({ title: 'Ny Backyard', description: 'Cheap camping' })
-    await camp.save()
-    res.send(camp)
-})
+// app.get('/makecampground', async (req, res) => {
+//     const camp = new Campground({ title: 'Ny Backyard', description: 'Cheap camping' })
+//     await camp.save()
+//     res.send(camp)
+// })
 
 
-
-app.get('/campgrounds', async (req, res) => {
+// ****************************************************
+// ******************** SHOW ALL CAMPS ROUTE **********
+// ****************************************************
+app.get('/campgrounds', catchAsync(async (req, res, next) => {
     const campgrounds = await Campground.find({})
     res.render('campgrounds/index', { campgrounds })
-})
+}))
 
+// ****************************************************
+// ******************** NEW PAGE ROUTE ****************
+// ****************************************************
 app.get('/campgrounds/new', (req, res) => {
     res.render('campgrounds/new.ejs')
 })
 
-app.get('/campgrounds/:id', async (req, res) => {
+// ****************************************************
+// ******************** SHOW PAGE ROUTE ***************
+// ****************************************************
+app.get('/campgrounds/:id', catchAsync(async (req, res, next) => {
     const campground = await Campground.findById(req.params.id)
     res.render('campgrounds/show.ejs', { campground })
-})
+}))
 
-app.put('/campgrounds/:id', async (req, res) => {
+
+// ****************************************************
+// ******************** EDIT ROUTE ********************
+// ****************************************************
+app.put('/campgrounds/:id', catchAsync(async (req, res, next) => {
     const { id } = req.params;
-    const { title, location } = req.body.campground
-    await Campground.findByIdAndUpdate(id, { title, location })
+    // const { title, location } = req.body.campground
+    await Campground.findByIdAndUpdate(id, req.body.campground)
     res.redirect(`/campgrounds/${id}`)
-})
+}))
 
-app.get('/campgrounds/:id/edit', async (req, res) => {
+// ****************************************************
+// ******************** EDIT PAGE ROUTE ***************
+// ****************************************************
+app.get('/campgrounds/:id/edit', catchAsync(async (req, res, next) => {
     const { id } = req.params;
     const campground = await Campground.findById(id)
     res.render('campgrounds/edit.ejs', { campground })
-})
+}))
 
-app.post('/campgrounds', async (req, res) => {
+// ****************************************************
+// ******************** NEW CAMP ROUTE ****************
+// ****************************************************
+app.post('/campgrounds', catchAsync(async (req, res, next) => {
     const newCamp = new Campground(req.body.campground)
     await newCamp.save()
     res.redirect(`/campgrounds/${newCamp._id}`)
-})
+}))
 
-app.delete('/campgrounds/:id', async (req, res) => {
+// ****************************************************
+// ******************** DELETE ROUTE ******************
+// ****************************************************
+app.delete('/campgrounds/:id', catchAsync(async (req, res, next) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id)
     res.redirect('/campgrounds')
+}))
+
+// ****************************************************
+// ******************** DEFAULT ERROR ROUTE ***********
+// ****************************************************
+app.use((err, req, res, next) => {
+    res.send("Something went wrong!")
 })
-
-
 
 app.listen(3000, () => {
     console.log("SERVING ON PORT 3000")
