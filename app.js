@@ -8,6 +8,7 @@ const methodOverride = require('method-override')
 const ejsMate = require('ejs-mate')
 const { nextTick } = require('process')
 const catchAsync = require('./utils/catchAsync')
+const ExpressError = require('./utils/ExpressError')
 
 mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp')
     .then(() => {
@@ -62,7 +63,8 @@ app.get('/campgrounds/new', (req, res) => {
 // ******************** SHOW PAGE ROUTE ***************
 // ****************************************************
 app.get('/campgrounds/:id', catchAsync(async (req, res, next) => {
-    const campground = await Campground.findById(req.params.id)
+    const { id } = req.params
+    const campground = await Campground.findById(id)
     res.render('campgrounds/show.ejs', { campground })
 }))
 
@@ -90,6 +92,7 @@ app.get('/campgrounds/:id/edit', catchAsync(async (req, res, next) => {
 // ******************** NEW CAMP ROUTE ****************
 // ****************************************************
 app.post('/campgrounds', catchAsync(async (req, res, next) => {
+    if (!req.body.campground) throw new ExpressError(400, 'Invalid Campground Data')
     const newCamp = new Campground(req.body.campground)
     await newCamp.save()
     res.redirect(`/campgrounds/${newCamp._id}`)
@@ -107,8 +110,15 @@ app.delete('/campgrounds/:id', catchAsync(async (req, res, next) => {
 // ****************************************************
 // ******************** DEFAULT ERROR ROUTE ***********
 // ****************************************************
+
+app.all('*', (req, res, next) => {
+    next(new ExpressError(404, 'Page not found'))
+})
+
 app.use((err, req, res, next) => {
-    res.send("Something went wrong!")
+    const { statusCode = 500 } = err
+    if (!err.message) err.message = "Oh No, Something went wrong!"
+    res.status(statusCode).render('error.ejs', { err })
 })
 
 app.listen(3000, () => {
