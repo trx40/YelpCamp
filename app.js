@@ -14,6 +14,9 @@ const { campgroundSchema, reviewSchema } = require('./validationSchemas')
 const Review = require('./models/review')
 const res = require('express/lib/response')
 
+const campgroundsRoute = require('./routes/campgrounds')
+const reviewsRoute = require('./routes/reviews')
+
 mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp')
     .then(() => {
         console.log("MONGO CONNECTION OPEN")
@@ -47,116 +50,22 @@ app.get('/', (req, res) => {
 //     res.send(camp)
 // })
 
-const validateCampground = (req, res, next) => {
-
-    const { error } = campgroundSchema.validate(req.body)
-    if (error) {
-        const msg = error.details.map(element => element.message).join(',')
-        throw new ExpressError(400, msg)
-    } else {
-        next()
-    }
-}
-
-const validataReview = (req, res, next) => {
-    const { error } = reviewSchema.validate(req.body)
-    if (error) {
-        const msg = error.details.map(element => element.message).join(',')
-        throw new ExpressError(400, msg)
-    }
-    else {
-        next()
-    }
-}
-// ****************************************************
-// ******************** SHOW ALL CAMPS ROUTE **********
-// ****************************************************
-app.get('/campgrounds', catchAsync(async (req, res, next) => {
-    const campgrounds = await Campground.find({})
-    res.render('campgrounds/index', { campgrounds })
-}))
-
-// ****************************************************
-// ******************** NEW PAGE ROUTE ****************
-// ****************************************************
-app.get('/campgrounds/new', (req, res) => {
-    res.render('campgrounds/new.ejs')
-})
-
-// ****************************************************
-// ******************** SHOW PAGE ROUTE ***************
-// ****************************************************
-app.get('/campgrounds/:id', catchAsync(async (req, res, next) => {
-    const { id } = req.params
-    const campground = await Campground.findById(id).populate('reviews')
-    if (!campground) throw new ExpressError(400, 'Campground not found')
-    res.render('campgrounds/show.ejs', { campground })
-}))
 
 
 // ****************************************************
-// ******************** EDIT ROUTE ********************
+// ******************** CAMPGROUNDS ROUTER ************
 // ****************************************************
-app.put('/campgrounds/:id', validateCampground, catchAsync(async (req, res, next) => {
-    const { id } = req.params;
-    await Campground.findByIdAndUpdate(id, req.body.campground)
-    res.redirect(`/campgrounds/${id}`)
-}))
+app.use('/campgrounds', campgroundsRoute)
 
 // ****************************************************
-// ******************** EDIT PAGE ROUTE ***************
+// ******************** REVIEWS ROUTER ************
 // ****************************************************
-app.get('/campgrounds/:id/edit', catchAsync(async (req, res, next) => {
-    const { id } = req.params;
-    const campground = await Campground.findById(id)
-    if (!campground) throw new ExpressError(400, 'Campground not found')
-    res.render('campgrounds/edit.ejs', { campground })
-}))
+app.use('/campgrounds/:id/reviews', reviewsRoute)
 
-// ****************************************************
-// ******************** NEW CAMP ROUTE ****************
-// ****************************************************
-app.post('/campgrounds', validateCampground, catchAsync(async (req, res) => {
-    // if (!req.body.campground) throw new ExpressError(400, 'Invalid Campground Data')
-
-    const newCamp = new Campground(req.body.campground)
-    await newCamp.save()
-    res.redirect(`/campgrounds/${newCamp._id}`)
-}))
-
-// ****************************************************
-// ******************** DELETE ROUTE ******************
-// ****************************************************
-app.delete('/campgrounds/:id', catchAsync(async (req, res, next) => {
-    const { id } = req.params;
-    await Campground.findByIdAndDelete(id)
-    res.redirect('/campgrounds')
-}))
-
-// ****************************************************
-// ******************** POST REVIEW ROUTE *************
-// ****************************************************
-app.post('/campgrounds/:id/reviews', validataReview, catchAsync(async (req, res) => {
-    const { id } = req.params;
-    const campground = await Campground.findById(id)
-    const review = new Review(req.body.review)
-    campground.reviews.push(review)
-    await review.save()
-    await campground.save()
-    res.redirect(`/campgrounds/${id}`)
-}))
-
-app.delete('/campgrounds/:id/reviews/:review_id', catchAsync(async (req, res) => {
-    const { id, review_id } = req.params
-    await Campground.findByIdAndUpdate(id, { $pull: { reviews: review_id } })
-    await Review.findByIdAndDelete(review_id)
-    res.redirect(`/campgrounds/${id}`)
-}))
 
 // ****************************************************
 // ******************** DEFAULT ERROR ROUTE ***********
 // ****************************************************
-
 app.all('*', (req, res, next) => {
     next(new ExpressError(404, 'Page not found'))
 })
