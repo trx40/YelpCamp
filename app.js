@@ -3,14 +3,15 @@ const express = require('express')
 const { default: mongoose } = require('mongoose')
 const app = express()
 const path = require('path')
-const Campground = require('./models/campground')
 const methodOverride = require('method-override')
 const ejsMate = require('ejs-mate')
+const session = require('express-session')
 
 const catchAsync = require('./utils/catchAsync')
 const ExpressError = require('./utils/ExpressError')
 
 const { campgroundSchema, reviewSchema } = require('./validationSchemas')
+const Campground = require('./models/campground')
 const Review = require('./models/review')
 const res = require('express/lib/response')
 
@@ -40,6 +41,13 @@ app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 app.use(express.static(path.join(__dirname, 'public')))
 
+const sessionConfig = {
+    secret: 'thisshouldbeabettersecret!',
+    resave: false,
+    saveUninitialized: true
+}
+
+app.use(session(sessionConfig));
 
 app.get('/', (req, res) => {
     res.render('home.ejs')
