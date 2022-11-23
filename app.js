@@ -1,4 +1,3 @@
-
 const express = require('express')
 const { default: mongoose } = require('mongoose')
 const app = express()
@@ -54,18 +53,13 @@ const sessionConfig = {
 }
 
 app.use(session(sessionConfig));
+app.use(flash());
 
-app.get('/', (req, res) => {
-    res.render('home.ejs')
+app.use((req, res, next) => {
+    res.locals.success = req.flash('success')
+    res.locals.error = req.flash('error')
+    next();
 })
-
-// app.get('/makecampground', async (req, res) => {
-//     const camp = new Campground({ title: 'Ny Backyard', description: 'Cheap camping' })
-//     await camp.save()
-//     res.send(camp)
-// })
-
-
 
 // ****************************************************
 // ******************** CAMPGROUNDS ROUTER ************
@@ -77,6 +71,16 @@ app.use('/campgrounds', campgroundsRoute)
 // ****************************************************
 app.use('/campgrounds/:id/reviews', reviewsRoute)
 
+
+app.get('/', (req, res) => {
+    res.render('home.ejs')
+})
+
+// app.get('/makecampground', async (req, res) => {
+//     const camp = new Campground({ title: 'Ny Backyard', description: 'Cheap camping' })
+//     await camp.save()
+//     res.send(camp)
+// })
 
 // ****************************************************
 // ******************** DEFAULT ERROR ROUTE ***********
