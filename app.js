@@ -6,6 +6,9 @@ const methodOverride = require('method-override')
 const ejsMate = require('ejs-mate')
 const session = require('express-session')
 const flash = require('connect-flash')
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const User = require('./models/user')
 
 const catchAsync = require('./utils/catchAsync')
 const ExpressError = require('./utils/ExpressError')
@@ -15,6 +18,7 @@ const Campground = require('./models/campground')
 const Review = require('./models/review')
 const res = require('express/lib/response')
 
+const userRoute = require('./routes/users')
 const campgroundsRoute = require('./routes/campgrounds')
 const reviewsRoute = require('./routes/reviews')
 
@@ -55,11 +59,26 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 app.use(flash());
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new LocalStrategy(User.authenticate()))
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.use((req, res, next) => {
     res.locals.success = req.flash('success')
     res.locals.error = req.flash('error')
     next();
 })
+
+app.get('/fakeUser', async (req, res) => {
+    const user = new User({ email: 'example@mail.com', username: 'abc' });
+    const newUser = await User.register(user, 'chicken');
+    res.send(newUser);
+})
+
+app.use('/', userRoute)
 
 // ****************************************************
 // ******************** CAMPGROUNDS ROUTER ************
