@@ -1,0 +1,59 @@
+<% layout('layouts/boilerplate') %>
+    <h1>Login</h1>
+    <form action="/login" method="post" class="needs-validation" novalidate>
+        <div class="mb-3">
+            <label class="form-label" for="title">Username</label>
+            <input class="form-control" type="text" id="Username" name="username" required>
+
+            <div class="invalid-feedback">
+                Please provide a valid username
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="title">Password</label>
+            <input class="form-control" type="password" id="password" name="password" required>
+
+            <div class="invalid-feedback">
+                Please provide a valid password
+            </div>
+        </div>
+        <!-- <span id="wrong_pass_alert"></span> -->
+        <!-- <div class="mb-3">
+            <label class="form-label" for="title">Confirm password</label>
+            <input class="form-control" type="password" id="confirm_pass" name="confirm_pass" required
+                onkeyup="validate_password()">
+
+            <div id="feedback" class="invalid-feedback">
+                Passwords should match
+            </div>
+        </div> -->
+
+
+        <div class="mb-3">
+            <button id="submit" class="btn btn-success">Login</button>
+        </div>
+    </form>
+
+    <!-- <script>
+
+        function validate_password() {
+
+
+            let pass = document.getElementById('password').value;
+            let confirm_pass = document.getElementById('confirm_pass').value;
+            if (pass != confirm_pass) {
+                document.getElementById('wrong_pass_alert').style.color = 'red';
+                document.getElementById('wrong_pass_alert').innerHTML
+                    = '☒ Use same password';
+                document.getElementById('submit').disabled = true;
+                document.getElementById('submit').style.opacity = (0.4);
+            } else {
+                document.getElementById('wrong_pass_alert').style.color = 'green';
+                document.getElementById('wrong_pass_alert').innerHTML =
+                    '🗹 Password Matched';
+                document.getElementById('submit').disabled = false;
+                document.getElementById('submit').style.opacity = (1);
+            }
+
+        }
+    </script> -->
