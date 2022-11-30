@@ -13,10 +13,6 @@ const User = require('./models/user')
 const catchAsync = require('./utils/catchAsync')
 const ExpressError = require('./utils/ExpressError')
 
-const { campgroundSchema, reviewSchema } = require('./validationSchemas')
-const Campground = require('./models/campground')
-const Review = require('./models/review')
-const res = require('express/lib/response')
 
 const userRoute = require('./routes/users')
 const campgroundsRoute = require('./routes/campgrounds')
@@ -78,6 +74,9 @@ app.get('/fakeUser', async (req, res) => {
     res.send(newUser);
 })
 
+// ****************************************************
+// ******************** USER ROUTER *******************
+// ****************************************************
 app.use('/', userRoute)
 
 // ****************************************************
@@ -86,7 +85,7 @@ app.use('/', userRoute)
 app.use('/campgrounds', campgroundsRoute)
 
 // ****************************************************
-// ******************** REVIEWS ROUTER ************
+// ******************** REVIEWS ROUTER ****************
 // ****************************************************
 app.use('/campgrounds/:id/reviews', reviewsRoute)
 
