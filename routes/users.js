@@ -1,7 +1,5 @@
 const express = require('express');
-const res = require('express/lib/response');
 const passport = require('passport');
-const { register } = require('../models/user');
 const router = express.Router();
 const User = require('../models/user');
 const catchAsync = require('../utils/catchAsync')
