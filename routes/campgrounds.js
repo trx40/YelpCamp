@@ -6,41 +6,19 @@ const catchAsync = require('../utils/catchAsync')
 const campgrounds = require('../controllers/campgrounds')
 const { isLoggedIn, validateCampground, isAuthor } = require('../middleware')
 
+router.route('/')
 
-// ****************************************************
-// ******************** SHOW ALL CAMPS ROUTE **********
-// ****************************************************
-router.get('/', catchAsync(campgrounds.index))
+    .get(catchAsync(campgrounds.index))
+    .post(isLoggedIn, validateCampground, catchAsync(campgrounds.createCampground))
 
-// ****************************************************
-// ******************** NEW PAGE ROUTE ****************
-// ****************************************************
 router.get('/new', isLoggedIn, campgrounds.renderNewForm)
 
-// ****************************************************
-// ******************** SHOW PAGE ROUTE ***************
-// ****************************************************
-router.get('/:id', catchAsync(campgrounds.showCampground))
+router.route('/:id')
 
+    .get(catchAsync(campgrounds.showCampground))
+    .put(isLoggedIn, isAuthor, validateCampground, catchAsync(campgrounds.editCampground))
+    .delete(isLoggedIn, isAuthor, catchAsync(campgrounds.deleteCampground))
 
-// ****************************************************
-// ******************** EDIT ROUTE ********************
-// ****************************************************
-router.put('/:id', isLoggedIn, isAuthor, validateCampground, catchAsync(campgrounds.editCampground))
-
-// ****************************************************
-// ******************** EDIT PAGE ROUTE ***************
-// ****************************************************
 router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(campgrounds.renderEditCampgroundForm))
-
-// ****************************************************
-// ******************** NEW CAMP ROUTE ****************
-// ****************************************************
-router.post('/', isLoggedIn, validateCampground, catchAsync(campgrounds.createCampground))
-
-// ****************************************************
-// ******************** DELETE ROUTE ******************
-// ****************************************************
-router.delete('/:id', isLoggedIn, isAuthor, catchAsync(campgrounds.deleteCampground))
 
 module.exports = router
