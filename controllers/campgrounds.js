@@ -22,9 +22,12 @@ module.exports.showCampground = async (req, res, next) => {
     res.render('campgrounds/show.ejs', { campground });
 }
 
-module.exports.editCampground = async (req, res, next) => {
+module.exports.editCampground = async (req, res) => {
     const { id } = req.params;
-    await Campground.findByIdAndUpdate(id, req.body.campground)
+    const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground })
+    const images = req.files.map(f => ({ url: f.path, filename: f.filename }))
+    campground.images.push(...images);
+    await campground.save();
     req.flash('success', 'Successfully updated campground!')
     res.redirect(`/campgrounds/${id}`)
 }
@@ -37,9 +40,11 @@ module.exports.renderEditCampgroundForm = async (req, res, next) => {
 }
 
 module.exports.createCampground = async (req, res) => {
+
     const newCamp = new Campground(req.body.campground)
+    newCamp.images = req.files.map(f => ({ url: f.path, filename: f.filename }))
     newCamp.author = req.user._id;
-    await newCamp.save()
+    await newCamp.save();
     req.flash('success', 'Successfully made a new campground!')
     res.redirect(`/campgrounds/${newCamp._id}`)
 }
