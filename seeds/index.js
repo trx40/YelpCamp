@@ -36,7 +36,20 @@ const seedDB = async () => {
             author: '638709cf68ccd27ea4bb0de3',
             location: `${cities[random1000].city}, ${cities[random1000].state}`,
             title: `${rnd(descriptors)} ${rnd(places)}`,
-            image: 'https://source.unsplash.com/collection/2184453',
+            images: [
+                {
+                    url: 'https://res.cloudinary.com/dmfu95na6/image/upload/v1670503606/YelpCamp/avla6ps6kvowg4nm9chv.jpg',
+                    filename: 'YelpCamp/avla6ps6kvowg4nm9chv',
+                },
+                {
+                    url: 'https://res.cloudinary.com/dmfu95na6/image/upload/v1670503608/YelpCamp/wzk8posk0jcvorr9vklk.jpg',
+                    filename: 'YelpCamp/wzk8posk0jcvorr9vklk',
+                },
+                {
+                    url: 'https://res.cloudinary.com/dmfu95na6/image/upload/v1670503611/YelpCamp/fkdnsws9o9qiywzbnwy8.jpg',
+                    filename: 'YelpCamp/fkdnsws9o9qiywzbnwy8',
+                }
+            ],
             description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut, totam quis corporis fuga cupiditate quo numquam itaque autem commodi. Veniam aliquam vitae ipsa officia, nostrum sit numquam dolorem ut laudantium?.Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut, totam quis corporis fuga cupiditate quo numquam itaque autem commodi. Veniam aliquam vitae ipsa officia, nostrum sit numquam dolorem ut laudantium? Harum dolorum dolore corrupti ea doloribus quos tempore omnis sit magni asperiores commodi nisi nulla, laboriosam nemo autem odio voluptatum nam. Vero ipsum, quos accusamus dicta at dignissimos veritatis nisi! Doloribus vitae, ut alias error necessitatibus consectetur aliquid ad aliquam iure repudiandae obcaecati dolorem iusto eos quos neque? Nulla ipsa voluptatibus, ipsam odit quasi soluta voluptatem reiciendis atque consectetur nobis.",
             price
         })
