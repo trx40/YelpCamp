@@ -1,5 +1,5 @@
 const camp = JSON.parse(campground)
-mapboxgl.accessToken = 'pk.eyJ1IjoidGVqYXMtbSIsImEiOiJjbGJnanoydXUwY2ZsM3ZvMzg2aG56b3ZkIn0.Z1h3Q5p0lcee3XvQFDHqUg';
+mapboxgl.accessToken = mapToken;
 const map = new mapboxgl.Map({
     container: 'map', // container ID
     style: 'mapbox://styles/mapbox/streets-v12', // style URL
@@ -8,4 +8,10 @@ const map = new mapboxgl.Map({
 });
 const marker = new mapboxgl.Marker()
     .setLngLat(camp.geometry.coordinates)
+    .setPopup(
+        new mapboxgl.Popup({ offset: 25 })
+            .setHTML(
+                `<h3>${camp.title}</h3>`
+            )
+    )
     .addTo(map);
