@@ -63,15 +63,23 @@
                         Please provide a valid description
                     </div>
                 </div>
-                <div class="mb-3">
-                    <% campground.images.forEach((img,i)=> { %>
-                        <img src="<%=img.thumbnail%>" class="img-thumbnail" alt="">
-                        <div class="form-check-inline">
-                            <input type="checkbox" name="deleteImages[]" id="image-<%=i%>" value="<%=img.filename%>">
-                        </div>
-                        <label for="image<%=i%>">Delete?</label>
-                        <% }) %>
+                <div class="col-lg-10 mb-3">
+                    <label for="">Select the image(s) you want to delete:</label>
+                    <div class="delete-box">
+
+                        <% campground.images.forEach( (img, i)=> { %>
+                            <div class="delete-item form-check">
+                                <label for="image-<%= i %>" class="form-check-label">
+                                    <img src="<%= img.thumbnail %>" class="img-thumb" alt="<%= img.filename %>">
+                                </label>
+                                <input type="checkbox" class="form-check-input" name="deleteImages[]"
+                                    value="<%= img.filename %>" id="image-<%= i %>">
+                            </div>
+                            <% }) %>
+
+                    </div>
                 </div>
+
                 <div class="mb-3">
                     <button class="btn btn-warning">Update Campground</button>
                 </div>
@@ -80,3 +88,12 @@
             <a href="/campgrounds/<%= campground._id %>">Back to Campground</a>
         </div>
     </div>
+    <!-- <div class="mb-3">
+        <% campground.images.forEach((img,i)=> { %>
+            <img src="<%=img.thumbnail%>" class="img-thumbnail" alt="">
+            <div class="form-check-inline">
+                <input type="checkbox" name="deleteImages[]" id="image-<%=i%>" value="<%=img.filename%>">
+            </div>
+            <label for="image<%=i%>">Delete?</label>
+            <% }) %>
+    </div> -->
