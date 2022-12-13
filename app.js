@@ -72,11 +72,6 @@ app.use((req, res, next) => {
     next();
 })
 
-app.get('/fakeUser', async (req, res) => {
-    const user = new User({ email: 'example@mail.com', username: 'abc' });
-    const newUser = await User.register(user, 'chicken');
-    res.send(newUser);
-})
 
 // ****************************************************
 // ******************** USER ROUTER *******************
