@@ -23,10 +23,10 @@ const ExpressError = require('./utils/ExpressError')
 const userRoute = require('./routes/users')
 const campgroundsRoute = require('./routes/campgrounds')
 const reviewsRoute = require('./routes/reviews');
-const { func } = require('joi');
 
 const mongoDbUrl = process.env.MONGODB_URL || 'mongodb://127.0.0.1:27017/yelp-camp';
 const secret = process.env.SECRET || 'thisshouldbeabettersecret!';
+const port = process.env.PORT || 3000;
 
 mongoose.connect(mongoDbUrl)
     .then(() => {
@@ -179,6 +179,6 @@ app.use((err, req, res, next) => {
     res.status(statusCode).render('error.ejs', { err })
 })
 
-app.listen(3000, () => {
-    console.log("SERVING ON PORT 3000")
+app.listen(port, () => {
+    console.log(`SERVING ON PORT ${port}`)
 })
