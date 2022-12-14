@@ -30,8 +30,14 @@ body {
     border-bottom-color: white;
 }
 
-.btn-secondary,
-.btn-secondary:hover {
+.btn-secondary {
     color: #333;
     text-shadow: none;
+    background-color: darkgray;
+}
+
+.btn-secondary:hover {
+    color: black;
+    background-color: white;
+    border-bottom-color: black;
 }
